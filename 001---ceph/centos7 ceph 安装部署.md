@@ -1,3 +1,13 @@
+# 经验:  
+  >在安装部署ceph集群前，可以先去网上看看其他网友是如何安装的，找找其中的共同点，  
+  说明这些是必须的安装的，
+  做到心里有数后，才进行安装自己的ceph集群  
+## 主要参考的文献如下:  
+  http://docs.ceph.org.cn/start/  
+  https://blog.csdn.net/styshoo/article/details/55471132  
+  https://blog.csdn.net/Notzuonotdied/article/details/69668519  
+  https://www.cnblogs.com/netmouser/p/6876846.html  
+  https://www.cnblogs.com/ytc6/p/7388654.html  
 # 当前系统环境
 | IP地址 | 主机名 | 角色 | 网络模式  |系统|内核版本|cpu|memory|
 | :------|:------|:-----|:----------|:---|:-----|:---|:----|
@@ -91,7 +101,7 @@ sed -i s'/Defaults requiretty/#Defaults requiretty'/g /etc/sudoers
 - ssh-keygen
 - ssh-copy-id guxin@slave1
 - ssh-copy-id guxin@slave2
-## 更新master节点上~/.ssh/config文件
+## 创建~/.ssh/config文件(master节点上)
 - 创建config文件
   ```
   Host    master
