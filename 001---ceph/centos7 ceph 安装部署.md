@@ -69,7 +69,7 @@ sed -i 's/$releasever/7.3.1611/g' /etc/yum.repos.d/CentOS-Base.repo
 
 ## 防火墙  (所有节点)
 - 方案一： 关闭防火墙
-  >systemctl stop firewalld
+  >systemctl stop firewalld  
 systemctl disable firewalld
 
 ## 安装NTP 服务(所有节点)  
@@ -93,7 +93,7 @@ systemctl start ntpd.service
 passwd guxin
 - 确保所有节点上新创建的用户guxin都有sudo权限  
   >echo "guxin ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/guxin
-sudo chmod 0440 /etc/sudoers.d/guxin
+sudo chmod 0440 /etc/sudoers.d/guxin  
 sed -i s'/Defaults requiretty/#Defaults requiretty'/g /etc/sudoers  
 ## 接下来改成普通用户guxin操作  (master节点)
   > su - guxin
@@ -136,14 +136,15 @@ sed -i s'/Defaults requiretty/#Defaults requiretty'/g /etc/sudoers
     2. ls  
       ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring  
 2. 把 Ceph 配置文件里的默认副本数从 3 改成 2 ，这样只有两个 OSD 也可以达到 active + clean 状态。把下面这行加入 [global] 段：  
-  osd pool default size = 2  
-3. 如果你有多个网卡，可以把 public network 写入 Ceph 配置文件的 [global] 段  
     >vim /home/guxin/my-cluster/ceph.conf  添加如下内容:  
-  public network = {ip-address}/{netmask}  
+  osd pool default size = 2  
+3. 如果你有多个网卡，可以把 public network 写入 Ceph 配置文件的 [global] 段    
+    >public network = {ip-address}/{netmask}  
 4. 安装 Ceph  
     >ceph-deploy install master slave1 slave2  
   
-5. sudo ceph --version  
+5. 查看版本号  
+    sudo ceph --version  
     >ceph version 10.2.11 (e4b061b47f07f583c92a050d9e84b1813a35671e)
 
 6. 配置初始 monitor(s)、并收集所有密钥：  
@@ -156,16 +157,16 @@ sed -i s'/Defaults requiretty/#Defaults requiretty'/g /etc/sudoers
 ## 添加OSD进程  
 1. 添加两个 OSD 。为了快速地安装，这篇快速入门把目录而非整个硬盘用于 OSD 守护进程。登录到 Ceph 节点、并给 OSD 守护进程创建一个目录。  
   创建osd0的工作目录&nbsp;&nbsp;&nbsp;(在slave1节点上)  
-    sudo mkdir /var/local/osd0  
+    *sudo mkdir /var/local/osd0*  
   创建osd1的工作目录&nbsp;&nbsp;&nbsp;(在slave2节点上)   
-    sudo mkdir /var/local/osd1  
+    *sudo mkdir /var/local/osd1*  
   准备OSD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(在master节点上)  
-    ceph-deploy osd prepare slave1:/var/local/osd0 slave2:/var/local/osd1  
+    *ceph-deploy osd prepare slave1:/var/local/osd0 slave2:/var/local/osd1*  
   激活OSD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(master节点)  
-    ceph-deploy osd activate slave1:/var/local/osd0 slave2:/var/local/osd1  
-2. 用 ceph-deploy 把配置文件和 admin 密钥拷贝到管理节点和 Ceph 节点，这样你每次执行 Ceph 命令行时就无需指定 monitor 地址和 ceph.client.admin.keyring 了  
+    *ceph-deploy osd activate slave1:/var/local/osd0 slave2:/var/local/osd1*  
+2. 用 ceph-deploy 把配置文件和 admin 密钥拷贝到管理节点和 Ceph 节点，这样你每次执行 Ceph 命令行时就无需指定 monitor 地址和 ceph.client.admin.keyring 了&nbsp;&nbsp;(master节点执行)    
   ceph-deploy admin master slave1 slave2 
-3. 确保你对 ceph.client.admin.keyring 有正确的操作权限  
+3. 确保你对 ceph.client.admin.keyring 有正确的操作权限&nbsp;&nbsp;(master节点执行)  
   sudo chmod +r /etc/ceph/ceph.client.admin.keyring  
 4. 检查集群的监控状态  
   ceph health  
