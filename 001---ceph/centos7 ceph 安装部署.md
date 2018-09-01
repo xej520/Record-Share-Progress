@@ -120,13 +120,13 @@ sed -i s'/Defaults requiretty/#Defaults requiretty'/g /etc/sudoers
     sudo yum install -y yum-plugin-priorities  
 # 部署ceph  
 ## 安装ceph-deploy软件包  
-- 在master节点执行下面的命令
+- 执行下面的命令(在master节点)
   > sudo yum install -y yum-utils && sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ && sudo yum install --nogpgcheck -y epel-release && sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 && sudo rm /etc/yum.repos.d/dl.fedoraproject.org*  
 
 - 更新软件库并安装 ceph-deploy(master节点)
   >sudo yum update && sudo yum install -y ceph-deploy
 
-## 创建目录  
+## 创建目录  (在master节点)
   用于保存ceph-deploy生成的配置文件和密钥对  
   
     mkdir my-cluster && cd my-cluster
