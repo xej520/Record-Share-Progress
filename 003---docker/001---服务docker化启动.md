@@ -2,7 +2,9 @@
 ##  主要步骤:  
 ### 下载zookeeper镜像:  
     docker pull zookeeper:3.5  
-### 编写启动脚本start-zk.sh  
+### 编写启动脚本start-zk.sh 
+    docker stop xej-zk
+    docker rm xej-zk
     docker run --name xej-zk -p 2181:2181 --restart always -d zookeeper:3.5  
 
 # mysql服务&ensp;&ensp;docker化运行  
