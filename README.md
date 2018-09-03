@@ -9,10 +9,7 @@
 
 # docker  
 - 001---服务docker化启动.md  
-  - zookeeper docker start(#zookeeper-docker-start) 
 - 002---docker 常用命令.md 
 
 # kubernetes 
 - 001---k8s常用命令.md 
-
-[单反入门](#https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/001---%E6%9C%8D%E5%8A%A1docker%E5%8C%96%E5%90%AF%E5%8A%A8.md#单反入门)
