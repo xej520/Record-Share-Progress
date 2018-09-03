@@ -1,5 +1,5 @@
-# zookeeper服务&ensp;&ensp;docker化运行  
-## 主要步骤:  
+#  zookeeper服务&ensp;&ensp;docker化运行  
+##  主要步骤:  
 ### 下载zookeeper镜像:  
     docker pull zookeeper:3.5  
 ### 编写启动脚本start-zk.sh  
@@ -31,12 +31,14 @@
     随便找一个普通 的配置文件就可以了，
     运行时，如果报错的话，就注释掉，  例如下面的配置文件: 
     https://www.cnblogs.com/kreo/p/4423362.html
-### chmod+x start-redis.sh  
-### ./start-redis.sh  
+### 添加执行权限  
+    chmod+x start-redis.sh  
+### 启动服务  
+    ./start-redis.sh  
 ### 验证服务是否正常？ 
-#### 检测端口号：  
+#### 1. 检测端口号：  
     netstat -an | grep 6379  
-#### telnet 登陆？  
+#### 2. telnet 登陆？  
     telnet ip 6379  
     能够进入说明服务没问题 
     输入:set book hadoop   
