@@ -9,6 +9,7 @@
 
 # docker  
 - 001---服务docker化启动.md  
+  - zookeeper docker start(#zookeeper-docker-start) 
 - 002---docker 常用命令.md 
 
 # kubernetes 
