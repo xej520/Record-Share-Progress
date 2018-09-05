@@ -10,11 +10,12 @@
 # 3. docker  
 - 001---服务docker化启动.md  
 - 002---docker 常用命令.md 
+- 003---docker-compose setup.md
 
 # 4. kubernetes 
 - 001---k8s常用命令.md   
 
-# 5. golang  
-- 001---go common commands.md  
+# 5. 
 
-# 6. 
+# 6. golang  
+- 001---go common commands.md  
