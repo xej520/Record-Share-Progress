@@ -11,6 +11,11 @@
 - 001---服务docker化启动.md  
 - 002---docker 常用命令.md 
 - 003---docker-compose setup.md
+- 004---image---Dockerfile.md 
+- 005---private---registry---build.md
+- 006---docker---question.md
+- 007---如何升级docker的版本.md
+
 
 # 4. kubernetes 
 - 001---k8s常用命令.md   
