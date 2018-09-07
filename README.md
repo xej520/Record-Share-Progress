@@ -30,10 +30,9 @@
 # 7. mesos  
 - [000---mesos 整体介绍总结.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/000---mesos%20%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D%E6%80%BB%E7%BB%93.md)
 - 000---mesos 安装部署.md
-- 001---mesos 整体介绍总结.md
-- 002---marathon特征---mesos特征.md  
-- 
-- 003---mesos 如何实现服务编排的.md
-- 004---mesos 如何在同一个slave上运行多个同类型任务的.md
-- 005---mesos 调度 资源分配.md
+- [001---mesos 整体介绍总结.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/001---mesos%20%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D%E6%80%BB%E7%BB%93.md)
+- [002---marathon特征---mesos特征.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/002---marathon%E7%89%B9%E5%BE%81---mesos%E7%89%B9%E5%BE%81.md)
+- [003---mesos 如何实现服务编排的.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/003---mesos%20%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%BC%96%E6%8E%92%E7%9A%84.md)
+- [004---mesos 如何在同一个slave上运行多个同类型任务的.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/004---mesos%20%E5%A6%82%E4%BD%95%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AAslave%E4%B8%8A%E8%BF%90%E8%A1%8C%E5%A4%9A%E4%B8%AA%E5%90%8C%E7%B1%BB%E5%9E%8B%E4%BB%BB%E5%8A%A1%E7%9A%84.md)
+- [005---mesos 调度 资源分配.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/005---mesos%20%E8%B0%83%E5%BA%A6%20%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D.md)
 
