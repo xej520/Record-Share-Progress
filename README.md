@@ -2,25 +2,32 @@
 ### **_记录、分享、成长_**
 目前分享的类别:  
 # 1. ceph 
-- 001---centos7 ceph 安装部署.md
+- [001---centos7 ceph 安装部署.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/001---ceph/001---centos7%20ceph%20%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2.md)
 
 # 2. intellij idea 
-- 001---intellij idea 快捷键.md  
+- [001---intellij idea 快捷键.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/002---intellij%20idea/001---intellij%20idea%20%E5%BF%AB%E6%8D%B7%E9%94%AE.md)
 
 # 3. docker  
-- 001---服务docker化启动.md  
-- 002---docker 常用命令.md 
-- 003---docker-compose setup.md
-- 004---image---Dockerfile.md 
-- 005---private---registry---build.md
+- [001---服务docker化启动.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/001---%E6%9C%8D%E5%8A%A1docker%E5%8C%96%E5%90%AF%E5%8A%A8.md)
+- [002---docker 常用命令.md ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/002---docker%20%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
+- [003---docker-compose setup.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/003---docker-compose%20setup.md)
+- [004---image---Dockerfile.md ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/004---image---Dockerfile.md)
+- [005---private---registry---build.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/005---private---registry---build.md)
 - 006---docker---question.md
-- 007---如何升级docker的版本.md
+- [007---如何升级docker的版本.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/007---%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7docker%E7%9A%84%E7%89%88%E6%9C%AC.md)
 
 
 # 4. kubernetes 
-- 001---k8s常用命令.md   
+- [001---k8s常用命令.md   ](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/001---k8s%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
 
-# 5. 
+# 5. shell 
+- [001---sed.md](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/001---sed.md)
 
 # 6. golang  
-- 001---go common commands.md  
+- [001---go common commands.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/001---go%20common%20commands.md)
+- [002---vendor.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/002---vendor.md)
+
+# 7. mesos  
+- 000---mesos 整体介绍总结.md
+- 001---mesos 原理介绍.md  
+- 002---mesos 安装部署.md
