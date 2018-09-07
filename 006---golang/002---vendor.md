@@ -1,3 +1,4 @@
+[TOC] 
 # vendor 常用命令  
 ## 安装vendor  
 >go get -u -v github.com/kardianos/govendor 
