@@ -57,7 +57,7 @@ B、若系统是mac系统的话，
 ##### 方法二: 
 >    vim /etc/docker/daemo.json   
 {  
-  "registry-mirrors":["https://registry.docker-cn.com"],
+  "registry-mirrors":["https://registry.docker-cn.com"],  
   "insecure-registries":["172.16.91.165:80"]  
 }    
 
@@ -81,7 +81,19 @@ http://172.16.91.165
 >docker push 172.16.91.165:80/micro-service/message-thrift-go-service   
 
 注意:  
->虽然使用的是默认端口80，但是，你最好还是显示的注明  
+>虽然使用的是默认端口80，但是，你最好还是显示的注明    
+#### 其他服务器如何访问私有仓库  
+##### 更新配置文件，如  
+>    vim /etc/docker/daemo.json   
+{  
+  "registry-mirrors":["https://registry.docker-cn.com"],    
+  "insecure-registries":["172.16.91.165:80"]  
+}    
+##### 重新启动docker服务  
+>systemctl restart docker  
+##### 拉取镜像  
+>docker pull 172.16.91.165:80/micro-service/message-thrift-go-service
+
 ### 当前配置文件  
 #### docker-compose.yml  
 ```
