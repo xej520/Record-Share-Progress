@@ -22,7 +22,7 @@
 属于企业级的私有仓库方案  
 ### 前提环境准备？         
 >需要提前安装docker-compse,   
-请查看003---docker-compose setup.md文档  
+请查看[003---docker-compose setup.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/003---docker-compose%20setup.md)文档  
 
 ### 安装harbor 
 #### harbor官网  
