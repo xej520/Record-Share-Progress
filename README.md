@@ -28,8 +28,7 @@
 - [002---vendor.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/002---vendor.md)
 
 # 7. mesos  
-- [000---mesos 整体介绍总结.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/000---mesos%20%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D%E6%80%BB%E7%BB%93.md)
-- 000---mesos 安装部署.md
+- [000---mesos 安装部署.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/000---mesos%20%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2.md)
 - [001---mesos 整体介绍总结.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/001---mesos%20%E6%95%B4%E4%BD%93%E4%BB%8B%E7%BB%8D%E6%80%BB%E7%BB%93.md)
 - [002---marathon特征---mesos特征.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/002---marathon%E7%89%B9%E5%BE%81---mesos%E7%89%B9%E5%BE%81.md)
 - [003---mesos 如何实现服务编排的.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/003---mesos%20%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%9C%8D%E5%8A%A1%E7%BC%96%E6%8E%92%E7%9A%84.md)
