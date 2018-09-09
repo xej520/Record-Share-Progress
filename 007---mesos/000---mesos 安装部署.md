@@ -42,7 +42,7 @@ https://hub.docker.com/r/mesosphere/
     docker stop mesos-master
     docker rm mesos-master
     docker run -d --net=host \
-        --hostname=172.16.91.222 \
+        --hostname=172.16.91.165 \
         --name=mesos-master
         -e MESOS_PORT=5050 \
         -e MESOS_ZK=zk://172.16.91.222:2181/mesos \
@@ -52,7 +52,7 @@ https://hub.docker.com/r/mesosphere/
         -e MESOS_WORK_DIR=/var/tmp/mesos \
         -v "$(pwd)/log/mesos:/var/log/mesos" \
         -v "$(pwd)/work/mesos:/var/tmp/mesos" \
-        mesosphere/mesos-master:1.4.1 --no-hostname_lookup --ip=172.16.91.222
+        mesosphere/mesos-master:1.4.1 --no-hostname_lookup --ip=172.16.91.165
     ```   
     环境变量MESOS_QUORUM的值是n/2+1,如n表示master的节点个数，如只有一个master节点时，n=1,则MESOS_QUORUM=1
 &ensp;
