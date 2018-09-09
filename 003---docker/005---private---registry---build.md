@@ -94,6 +94,16 @@ http://172.16.91.165
 ##### 拉取镜像  
 >docker pull 172.16.91.165:80/micro-service/message-thrift-go-service
 
+### 遇到的问题？ 
+1. denied: requested access to the resource is denied   
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/4F5E4B5255B64A0BAB52D54505C00901/20118)  
+因为这是此节点第一次登录harbor，并且push镜像到harbor上，需要密码登陆的  
+docker login 172.16.91.222:80  
+username:admin  
+password:123456   
+就可以了
+
+
 ### 当前配置文件  
 #### docker-compose.yml  
 ```
