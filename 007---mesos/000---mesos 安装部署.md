@@ -10,7 +10,7 @@
 ### 服务器信息
 |name|ip|role|task|  
 |:--|:--|:--|:--| 
-|master|172.16.91.222|master|MesosMaster、zookeeper、marathon-lb| 
+|master|172.16.91.165|master|MesosMaster、zookeeper、marathon-lb| 
 |node1|172.16.91.166|worker|MesosSlave、Marathon| 
 |node2|172.16.91.167|worker|MesosSlave|  
 ### 关系图 
@@ -105,6 +105,9 @@ mesos 表示，mesos同样实现了自己的类似于docker的功能，如果不
         --master zk://172.16.91.222:2181/mesos \
         --zk zk://172.16.91.222:2181/marathon
     ``` 
+web ui访问marathon：  
+172.16.91.165:7070  
+
 &ensp;
 ### 部署Marathon-lb  
 1. 拉取marathon-lb镜像&ensp;&ensp;(https://hub.docker.com/r/mesosphere/marathon-lb/)  
