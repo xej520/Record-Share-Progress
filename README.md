@@ -13,7 +13,7 @@
 - [003---docker-compose setup.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/003---docker-compose%20setup.md)
 - [004---image---Dockerfile.md ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/004---image---Dockerfile.md)
 - [005---private---registry---build.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/005---private---registry---build.md)
-- 006---docker---question.md
+- [006---docker---question.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/006---docker---question.md)
 - [007---如何升级docker的版本.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/007---%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7docker%E7%9A%84%E7%89%88%E6%9C%AC.md)
 
 
