@@ -51,11 +51,12 @@
 #  http://oss.segetech.com/intra/srv/dnsmasq.conf
 #dns解析日志
 log-queries
-#定义主机与IP映射
-address=/h0/172.17.205.28
-address=/h1/172.17.205.32  
+#域名与IP映射
+address=/lb.guxin.com/172.16.91.165
 
-```
+```  
+说明:  
+>docker 容器内部 会将lb.guxin.com解析成172.17.205.28
 ### 编写启动脚本 
 ```
 #!/bin/bash 
@@ -94,3 +95,5 @@ docker run \
 ```  
 #### 客户端节点，需要重新启动docker服务，从而加载配置文件  
 >systemctl docker restart  
+
+其实，docker部署跟yum部署，都是加载相同的配置文件，可以从日志中观察出来
