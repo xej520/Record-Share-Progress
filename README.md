@@ -14,7 +14,11 @@
 - [004---image---Dockerfile.md ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/004---image---Dockerfile.md)
 - [005---private---registry---build.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/005---private---registry---build.md)
 - [006---docker---question.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/006---docker---question.md)
-- [007---如何升级docker的版本.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/007---%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7docker%E7%9A%84%E7%89%88%E6%9C%AC.md)
+- [007---如何升级docker的版本.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/007---%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7docker%E7%9A%84%E7%89%88%E6%9C%AC.md)  
+- 008---docker-compose---mesos---kubernetes 是如何实现 服务的发现功能的.md  
+- 009---docker内是如何解析域名的.md  
+- 010---为docker提供dns域名解析服务.md  
+- 011---物理部署dns.md  
 
 
 # 4. kubernetes 
