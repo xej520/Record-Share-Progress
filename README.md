@@ -21,6 +21,7 @@
 
 
 # 4. kubernetes 
+- [000---常用命令.md](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/000---%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
 - [001---k8s常用命令.md   ](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/001---k8s%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
 
 # 5. shell 
@@ -28,7 +29,8 @@
 
 # 6. golang  
 - [001---go common commands.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/001---go%20common%20commands.md)
-- [002---vendor.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/002---vendor.md)
+- [002---vendor.md ](https://github.com/xej520/Record-Share-Progress/blob/master/006---golang/002---vendor.md)  
+- [003---go install.md]()
 
 # 7. mesos  
 - [000---mesos 安装部署.md](https://github.com/xej520/Record-Share-Progress/blob/master/007---mesos/000---mesos%20%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2.md)
