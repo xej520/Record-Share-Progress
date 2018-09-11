@@ -15,7 +15,7 @@
 - [005---private---registry---build.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/005---private---registry---build.md)
 - [006---docker---question.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/006---docker---question.md)
 - [007---如何升级docker的版本.md](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/007---%E5%A6%82%E4%BD%95%E5%8D%87%E7%BA%A7docker%E7%9A%84%E7%89%88%E6%9C%AC.md)  
-- 008---docker-compose---mesos---kubernetes 是如何实现 服务的发现功能的.md  
+- [008---docker-compose---mesos---kubernetes 是如何实现 服务的发现功能的.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/008---docker-compose---mesos---kubernetes%20%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%20%E6%9C%8D%E5%8A%A1%E7%9A%84%E5%8F%91%E7%8E%B0%E5%8A%9F%E8%83%BD%E7%9A%84.md)
 - [009---docker内是如何解析域名的.md  ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/009---docker%E5%86%85%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E6%9E%90%E5%9F%9F%E5%90%8D%E7%9A%84.md)
 - [010---为docker提供dns域名解析服务.md ](https://github.com/xej520/Record-Share-Progress/blob/master/003---docker/010---%E4%B8%BAdocker%E6%8F%90%E4%BE%9Bdns%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90%E6%9C%8D%E5%8A%A1.md)
 
