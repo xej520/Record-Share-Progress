@@ -55,17 +55,23 @@ Description=Kubernetes API Server
 ...
 [Service]
 #可执行文件的位置
-ExecStart=/home/michael/bin/kube-apiserver \
+ExecStart=/root/bin/kube-apiserver \
+#准入控制
+--admission-control=NamespaceLifecycle,LimitRanger,DefaultStorageClass, ResourceQuota,NodeRestriction \
 #非安全端口(8080)绑定的监听地址 这里表示监听所有地址
+#0.0.0.0是任意的IP，其他服务可以通过任意的方式进行访问我的端口，如域名、IP
 --insecure-bind-address=0.0.0.0 \
 #不使用https
 --kubelet-https=false \
-#kubernetes集群的虚拟ip的地址范围
+#kubernetes集群的虚拟ip的地址范围，就是service的虚拟IP地址
 --service-cluster-ip-range=10.68.0.0/16 \
 #service的nodeport的端口范围限制
 --service-node-port-range=20000-40000 \
 #很多地方都需要和etcd打交道，也是唯一可以直接操作etcd的模块
---etcd-servers=http://192.168.1.102:2379 \
+--etcd-servers=http://172.16.91.222:2379 \ 
+#日志输出级别，2表示info级别，可以设置成2,3,4,5
+#越高的话，打印的日志越多，
+--v=2
 ```
 
 ## <h2 id="3">3. 部署ControllerManager（主节点）  </h2>  
@@ -92,10 +98,10 @@ $ journalctl -f -u kube-controller-manager
 Description=Kubernetes Controller Manager
 ...
 [Service]
-ExecStart=/home/michael/bin/kube-controller-manager \
+ExecStart=/root/bin/kube-controller-manager \
 #对外服务的监听地址，这里表示只有本机的程序可以访问它
 --address=127.0.0.1 \
-#apiserver的url
+#apiserver的url， 也就是通过本机上的8080跟apiserver进行通信
 --master=http://127.0.0.1:8080 \
 #服务虚拟ip范围，同apiserver的配置
 --service-cluster-ip-range=10.68.0.0/16 \
@@ -126,7 +132,7 @@ $ journalctl -f -u kube-scheduler
 Description=Kubernetes Scheduler
 ...
 [Service]
-ExecStart=/home/michael/bin/kube-scheduler \
+ExecStart=/root/bin/kube-scheduler \
 #对外服务的监听地址，这里表示只有本机的程序可以访问它
 --address=127.0.0.1 \
 #apiserver的url
@@ -171,7 +177,7 @@ No IPv6 peers found.
 #### 5.3.3 查看端口BGP 协议是通过TCP 连接来建立邻居的，因此可以用netstat 命令验证 BGP Peer
 ```
 $ netstat -natp|grep ESTABLISHED|grep 179
-tcp        0      0 192.168.1.102:60959     192.168.1.103:179       ESTABLISHED 29680/bird
+tcp        0      0 172.168.91.185:60959     192.168.1.103:179       ESTABLISHED 29680/bird
 ```
 #### 5.3.4 查看集群ippool情况
 ```
@@ -193,7 +199,7 @@ Description=calico node
 #以docker方式运行
 ExecStart=/usr/bin/docker run --net=host --privileged --name=calico-node \
 #指定etcd endpoints（这里主要负责网络元数据一致性，确保Calico网络状态的准确性）
--e ETCD_ENDPOINTS=http://192.168.1.102:2379 \
+-e ETCD_ENDPOINTS=http://172.168.91.222:2379 \
 #网络地址范围（同上面ControllerManager）
 -e CALICO_IPV4POOL_CIDR=172.20.0.0/16 \
 #镜像名，为了加快大家的下载速度，镜像都放到了阿里云上
@@ -213,7 +219,7 @@ kubectl是Kubernetes的命令行工具，是Kubernetes用户和管理员必备�
 我们这没有安全相关的东西，只需要设置好api-server和上下文就好啦：
 ```
 #指定apiserver地址（ip替换为你自己的api-server地址）
-kubectl config set-cluster kubernetes  --server=http://192.168.1.102:8080
+kubectl config set-cluster kubernetes  --server=http://172.16.91.185:8080
 #指定设置上下文，指定cluster
 kubectl config set-context kubernetes --cluster=kubernetes
 #选择默认的上下文
@@ -262,12 +268,12 @@ Description=Kubernetes Kubelet
 [Service]
 #kubelet工作目录，存储当前节点容器，pod等信息
 WorkingDirectory=/var/lib/kubelet
-ExecStart=/home/michael/bin/kubelet \
+ExecStart=/root/bin/kubelet \
 #对外服务的监听地址
---address=192.168.1.103 \
+--address=172.16.91.186 \
 #指定基础容器的镜像，负责创建Pod 内部共享的网络、文件系统等，这个基础容器非常重要：K8S每一个运行的 POD里面必然包含这个基础容器，如果它没有运行起来那么你的POD 肯定创建不了
 --pod-infra-container-image=registry.cn-hangzhou.aliyuncs.com/imooc/pause-amd64:3.0 \
-#访问集群方式的配置，如api-server地址等
+#访问集群方式的配置，如api-server地址等，就是如何访问api-server的
 --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \
 #声明cni网络插件
 --network-plugin=cni \
@@ -278,6 +284,7 @@ ExecStart=/home/michael/bin/kubelet \
 ...
 ```
 #### 7.3.2 kubelet.kubeconfig 
+就是描述了如何去访问api-server
 kubelet依赖的一个配置，格式看也是我们后面经常遇到的yaml格式，描述了kubelet访问apiserver的方式  
 ```
 apiVersion: v1
@@ -286,7 +293,7 @@ clusters:
 #跳过tls，即是kubernetes的认证
 insecure-skip-tls-verify: true
 #api-server地址
-server: http://192.168.1.102:8080
+server: http://172.16.91.185:8080
 ...
 ```
 #### 7.3.3 calico.conf  
@@ -297,14 +304,14 @@ calico作为kubernets的CNI插件的配置
   "cniVersion": "0.1.0",  
   "type": "calico",  
     <!--etcd的url-->
-    "ed_endpoints": "http://192.168.1.102:2379",  
+    "etcd_endpoints": "http://172.16.91.222:2379",  
     "logevel": "info",  
     "ipam": {  
         "type": "calico-ipam"  
    },  
     "kubernetes": {  
         <!--api-server的url-->
-        "k8s_api_root": "http://192.168.1.102:8080"  
+        "k8s_api_root": "http://172.16.91.185:8080"  
     }  
 }  
 ```
@@ -344,9 +351,9 @@ Description=Kubernetes Kube-Proxy Server ...
 [Service]
 #工作目录
 WorkingDirectory=/var/lib/kube-proxy
-ExecStart=/home/michael/bin/kube-proxy \
+ExecStart=/root/bin/kube-proxy \
 #监听地址
---bind-address=192.168.1.103 \
+--bind-address=172.16.91.186 \
 #依赖的配置文件，描述了kube-proxy如何访问api-server
 --kubeconfig=/etc/kubernetes/kube-proxy.kubeconfig \
 ...

@@ -23,7 +23,8 @@
 # 4. kubernetes 
 - [003---k8s部署 集中箱]
 - [000---常用命令.md](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/000---%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
-- [001---k8s常用命令.md   ](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/001---k8s%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
+- [001---k8s常用命令.md   ](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/001---k8s%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)  
+- [002---service.md]()
 
 # 5. shell 
 - [000---常用命令](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/000---%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)

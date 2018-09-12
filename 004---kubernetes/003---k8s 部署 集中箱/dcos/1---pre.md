@@ -123,7 +123,12 @@ kubernetes的安装有几种方式，不管是kube-admin还是社区贡献的部
  所以我们这里使用二进制的方式来部署。二进制文件已经这里备好，大家可以打包下载，把下载好的文件放到每个节点上，放在哪个目录随你喜欢，放好后最好设置一下**环境变量$PATH**，方便后面可以直接使用命令。(科学上网的同学也可以自己去官网找找)
 [kubernetes1.9.0 二进制文件下载地址](https://pan.baidu.com/s/1BBqsU4Qj-hdh7t4u9tu8wA)  
 
+#### 将二进制文件添加到$path里
+```
+cd ~  //进入root目录下
+mv kubernetes-starter  bin    //这样，就可以直接使用命令，也不需要添加$path, 注意，前提条件是，root目录下，没有bin目录，不然，使用这个命令mv kubernetes-starter/* bin
 
+```
 
 ## 5. 准备配置文件(所有节点)  
 上一步我们下载了kubernetes各个组件的二进制文件，这些可执行文件的运行也是需要添加很多参数的，包括有的还会依赖一些配置文件。现在我们就把运行它们需要的参数和配置文件都准备好。
@@ -132,7 +137,8 @@ kubernetes的安装有几种方式，不管是kube-admin还是社区贡献的部
     $ cd
     $ git clone https://github.com/liuyi01/kubernetes-starter.git
     #看看git内容
-    $ cd ~/kubernetes-starter && ls
+    $ cd ~/kubernetes-starter && ls  
+
 ### 5.2 文件说明
 - gen-config.sh 
 >shell脚本，用来根据每个同学自己的集群环境(ip，hostname等)，根据下面的模板，生成适合大家各自环境的配置文件。生成的文件会放到target文件夹下。
