@@ -124,10 +124,14 @@ cfssl是非常好用的CA工具，我们用它来生成证书和秘钥文件
 #下载
 $ wget -q --show-progress --https-only --timestamping \
   https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 \
-  https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+  https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64  
+  或者  
+  wget -q  --timestamping   https://pkg.cfssl.org/R1.2/cfssl_linux-amd64   https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
 #修改为可执行权限
 $ chmod +x cfssl_linux-amd64 cfssljson_linux-amd64
 #移动到bin目录
+$ mkdir -p  /usr/local/bin/cfssl
+$ mkdir -p /usr/local/bin/cfssljson
 $ mv cfssl_linux-amd64 /usr/local/bin/cfssl
 $ mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
 #验证
@@ -135,8 +139,16 @@ $ cfssl version
 ```
 
 
-## 3.4 生成根证书（主节点）
-根证书是证书信任链的根，各个组件通讯的前提是有一份大家都信任的证书（根证书），每个人使用的证书都是由这个根证书签发的。  
+## 3.4 生成根证书（主节点）  
+
+根证书是证书信任链的根，各个组件通讯的前提是有一份大家都信任的证书（根证书），每个人使用的证书都是由这个根证书签发的。 
+打个比方：  
+- ca 相当于警察局
+- 各个组件  相当于人 
+- 证书 就相当于身份证  
+- 组件之间的通信，就通过这个身份证进行通信  
+- 也就是说，当我访问另一个组件时，另一个组件，检查一下，这个身份证(证书)是不是警察局办法的，如果是，就通过认证了  
+
 ```
 #所有证书相关的东西都放在这
 $ mkdir -p /etc/kubernetes/ca
@@ -162,7 +174,8 @@ $ mkdir -p /etc/kubernetes/ca/etcd
 #准备etcd证书配置
 $ cp ~/kubernetes-starter/target/ca/etcd/etcd-csr.json /etc/kubernetes/ca/etcd/
 $ cd /etc/kubernetes/ca/etcd/
-#使用根证书(ca.pem)签发etcd证书
+#使用根证书(ca.pem)签发etcd证书 
+# **注意，每次用下面命令生成的根证书都不一样的**
 $ cfssl gencert \
         -ca=/etc/kubernetes/ca/ca.pem \
         -ca-key=/etc/kubernetes/ca/ca-key.pem \
@@ -187,7 +200,7 @@ $ systemctl daemon-reload
 $ service etcd start
 #验证etcd服务（endpoints自行替换）
 $ ETCDCTL_API=3 etcdctl \
-  --endpoints=https://192.168.1.102:2379  \
+  --endpoints=https://172.16.91.222:2379  \
   --cacert=/etc/kubernetes/ca/ca.pem \
   --cert=/etc/kubernetes/ca/etcd/etcd.pem \
   --key=/etc/kubernetes/ca/etcd/etcd-key.pem \
@@ -218,15 +231,20 @@ kubernetes.csr  kubernetes-csr.json  kubernetes-key.pem  kubernetes.pem
 $ cd ~/kubernetes-starter
 $ vimdiff kubernetes-simple/master-node/kube-apiserver.service kubernetes-with-ca/master-node/kube-apiserver.service
 ```  
+### 非安全地址参数--insecure-bind-address
+由0.0.0.0改成了127.0.0.1， 也就是说，以前其他节点都可以以非安全的方式，访问api-version进程，
+现在，这个非安全的地址，只对本机开放，
+
 ### 生成token认证文件  
 ```
 #生成随机token
 $ head -c 16 /dev/urandom | od -An -t x | tr -d ' '
-8afdf3c4eb7c74018452423c29433609
+b82991433aeb3eef4764ae6a434a7a7a
 
 #按照固定格式写入token.csv，注意替换token内容
-$ echo "8afdf3c4eb7c74018452423c29433609,kubelet-bootstrap,10001,\"system:kubelet-bootstrap\"" > /etc/kubernetes/ca/kubernetes/token.csv
-```
+$ echo "b82991433aeb3eef4764ae6a434a7a7a,kubelet-bootstrap,10001,\"system:kubelet-bootstrap\"" > /etc/kubernetes/ca/kubernetes/token.csv
+```  
+内容格式：token，用户，用户ID(10001)
 
 ### 更新api-server服务
 ```
@@ -239,7 +257,9 @@ $ journalctl -f -u kube-apiserver
 ```
 
 # <h2 id="6">6. 改造controller-manager  </h2>  
-controller-manager一般与api-server在同一台机器上，所以可以使用非安全端口与api-server通讯，不需要生成证书和私钥。
+controller-manager一般与api-server在同一台机器上，所以可以使用非安全端口与api-server通讯，不需要生成证书和私钥。  
+**备注：**  
+使用的是ca的根证书和密钥，没有专门生成针对controller-manager的证书
 ## 6.1 改造controller-manager服务
 
 ### 6.1.1 查看diff
@@ -247,7 +267,6 @@ controller-manager一般与api-server在同一台机器上，所以可以使用�
 $ cd ~/kubernetes-starter/
 $ vimdiff kubernetes-simple/master-node/kube-controller-manager.service kubernetes-with-ca/master-node/kube-controller-manager.service
 ```
-
 
 ### 6.1.2 更新controller-manager服务
 ```
@@ -302,7 +321,7 @@ admin.csr  admin-csr.json  admin-key.pem  admin.pem
 $ kubectl config set-cluster kubernetes \
         --certificate-authority=/etc/kubernetes/ca/ca.pem \
         --embed-certs=true \
-        --server=https://192.168.1.102:6443
+        --server=https://172.16.91.185:6443
 #设置客户端认证参数，指定admin证书和秘钥
 $ kubectl config set-credentials admin \
         --client-certificate=/etc/kubernetes/ca/admin/admin.pem \
@@ -329,6 +348,28 @@ etcd-0               Healthy   {"health": "true"}
 
 # <h2 id="9">9. 改造calico-node </h2>
 ## 9.1 准备证书
+后续可以看到calico证书用在四个地方：  
+- calico/node 这个docker 容器运行时访问 etcd 使用证书  
+- cni 配置文件中，cni 插件需要访问 etcd 使用证书  
+- calicoctl 操作集群网络时访问 etcd 使用证书  
+- calico/kube-controllers 同步集群网络策略时访问 etcd 使用证书  
+```
+#calico证书放在这
+$ mkdir -p /etc/kubernetes/ca/calico
+#准备calico证书配置 - calico只需客户端证书，因此证书请求中 hosts 字段可以为空
+$ cp ~/kubernetes-starter/target/ca/calico/calico-csr.json /etc/kubernetes/ca/calico/
+$ cd /etc/kubernetes/ca/calico/
+#使用根证书(ca.pem)签发calico证书
+$ cfssl gencert \
+        -ca=/etc/kubernetes/ca/ca.pem \
+        -ca-key=/etc/kubernetes/ca/ca-key.pem \
+        -config=/etc/kubernetes/ca/ca-config.json \
+        -profile=kubernetes calico-csr.json | cfssljson -bare calico
+#我们最终要的是calico-key.pem和calico.pem
+$ ls
+calico.csr  calico-csr.json  calico-key.pem  calico.pem
+```
+
 
 ## 9.2 改造calico服务
 
@@ -337,11 +378,11 @@ etcd-0               Healthy   {"health": "true"}
 $ cd ~/kubernetes-starter
 $ vimdiff kubernetes-simple/all-node/kube-calico.service kubernetes-with-ca/all-node/kube-calico.service
 ```
->通过diff会发现，calico多了几个认证相关的文件：
-/etc/kubernetes/ca/ca.pem
-/etc/kubernetes/ca/calico/calico.pem
-/etc/kubernetes/ca/calico/calico-key.pem
-由于calico服务是所有节点都需要启动的，大家需要把这几个文件拷贝到每台服务器上
+>通过diff会发现，calico多了几个认证相关的文件：  
+/etc/kubernetes/ca/ca.pem  
+/etc/kubernetes/ca/calico/calico.pem  
+/etc/kubernetes/ca/calico/calico-key.pem  
+由于calico服务是所有节点都需要启动的，大家需要把这几个文件拷贝到每台服务器上  
 
 ### 9.2.2 更新calico服务
 ```
@@ -354,34 +395,40 @@ $ calicoctl node status
 ```
 
 # <h2 id="10">10. 改造kubelet  </h2>  
-我们这里让kubelet使用引导token的方式认证，所以认证方式跟之前的组件不同，它的证书不是手动生成，而是由工作节点TLS BootStrap 向api-server请求，由主节点的controller-manager 自动签发。
-## 10.1 创建角色绑定（主节点）
-引导token的方式要求客户端向api-server发起请求时告诉他你的用户名和token，并且这个用户是具有一个特定的角色：system:node-bootstrapper，所以需要先将 bootstrap token 文件中的 kubelet-bootstrap 用户赋予这个特定角色，然后 kubelet 才有权限发起创建认证请求。 在主节点执行下面命令  
+我们这里让kubelet使用**引导token的方式认证**，所以认证方式跟之前的**组件不同**，它的证书不是手动生成，  
+而是由工作节点**TLS BootStrap** 向**api-server**请求，由**主节点的controller-manager 自动签发。**
+## 10.1 创建角色绑定（**主节点**）
+引导token的方式
+- 要求客户端向api-server发起请求时告诉他**你的用户名和token**，
+- 并且这个用户是具有一个**特定的角色**：system:node-bootstrapper，
+- 所以需要先将 bootstrap token 文件中的 kubelet-bootstrap 用户赋予这个特定角色，
+- 然后 kubelet 才有权限发起创建认证请求。   
+在主节点执行下面命令  
 ```
-#可以通过下面命令查询clusterrole列表
+#可以通过下面命令**查询clusterrole列表**
 $ kubectl -n kube-system get clusterrole
 
 #可以回顾一下token文件的内容
 $ cat /etc/kubernetes/ca/kubernetes/token.csv
-8afdf3c4eb7c74018452423c29433609,kubelet-bootstrap,10001,"system:kubelet-bootstrap"
+b82991433aeb3eef4764ae6a434a7a7a,kubelet-bootstrap,10001,"system:kubelet-bootstrap"
 
 #创建角色绑定（将用户kubelet-bootstrap与角色system:node-bootstrapper绑定）
 $ kubectl create clusterrolebinding kubelet-bootstrap \
          --clusterrole=system:node-bootstrapper --user=kubelet-bootstrap
 ```
 
-## 10.2 创建bootstrap.kubeconfig（工作节点）
-这个配置是用来完成bootstrap token认证的，保存了像用户，token等重要的认证信息，这个文件可以借助kubectl命令生成：（也可以自己写配置）  
+## 10.2 创建bootstrap.kubeconfig（**工作节点**）
+这个配置是用来完成bootstrap token认证的，保存了像**用户，token**等重要的认证信息，这个文件可以借助kubectl命令生成：（也可以自己写配置）  
 ```
 #设置集群参数(注意替换ip)
 $ kubectl config set-cluster kubernetes \
         --certificate-authority=/etc/kubernetes/ca/ca.pem \
         --embed-certs=true \
-        --server=https://192.168.1.102:6443 \
+        --server=https://172.16.91.185:6443 \
         --kubeconfig=bootstrap.kubeconfig
 #设置客户端认证参数(注意替换token)
 $ kubectl config set-credentials kubelet-bootstrap \
-        --token=8afdf3c4eb7c74018452423c29433609 \
+        --token=b82991433aeb3eef4764ae6a434a7a7a \
         --kubeconfig=bootstrap.kubeconfig
 #设置上下文
 $ kubectl config set-context default \
@@ -416,12 +463,14 @@ $ cp ~/kubernetes-starter/target/worker-node/kubelet.service /lib/systemd/system
 $ systemctl daemon-reload
 $ service kubelet start
 
-#启动kubelet之后到master节点允许worker加入(批准worker的tls证书请求)
+#启动kubelet之后到master节点允许worker加入(批准worker的tls证书请求)  
+
+# 注意，下面这条命令在<<主节点上执行>>的
 #--------*在主节点执行*---------
 $ kubectl get csr|grep 'Pending' | awk '{print $1}'| xargs kubectl certificate approve
 #-----------------------------
 
-#检查日志
+#检查日志(工作节点执行命令)
 $ journalctl -f -u kubelet
 ```
 
@@ -446,15 +495,15 @@ $ cfssl gencert \
 $ ls
 kube-proxy.csr  kube-proxy-csr.json  kube-proxy-key.pem  kube-proxy.pem
 ```
-## 11.2 生成kube-proxy.kubeconfig配置
+## 11.2 生成kube-proxy.kubeconfig配置 
 ```
 #设置集群参数（注意替换ip）
 $ kubectl config set-cluster kubernetes \
         --certificate-authority=/etc/kubernetes/ca/ca.pem \
         --embed-certs=true \
-        --server=https://192.168.1.102:6443 \
+        --server=https://172.16.91.185:6443 \
         --kubeconfig=kube-proxy.kubeconfig
-#置客户端认证参数
+#设置客户端认证参数
 $ kubectl config set-credentials kube-proxy \
         --client-certificate=/etc/kubernetes/ca/kube-proxy/kube-proxy.pem \
         --client-key=/etc/kubernetes/ca/kube-proxy/kube-proxy-key.pem \
@@ -484,7 +533,7 @@ $ cp ~/kubernetes-starter/target/worker-node/kube-proxy.service /lib/systemd/sys
 $ systemctl daemon-reload
 
 #安装依赖软件
-$ apt install conntrack
+$ yum install -y conntrack
 
 #启动服务
 $ service kube-proxy start
@@ -493,8 +542,9 @@ $ journalctl -f -u kube-proxy
 ```
 
 # <h2 id="12">12. 改造kube-dns  </h2>  
-kube-dns有些特别，因为它本身是运行在kubernetes集群中，以kubernetes应用的形式运行。所以它的认证授权方式跟之前的组件都不一样。它需要用到service account认证和RBAC授权。
-service account认证：
+kube-dns有些特别，因为它本身是运行在kubernetes集群中，以kubernetes应用的形式运行。  
+所以它的认证授权方式跟之前的组件都不一样。它需要用到**service account认证和RBAC授权。**
+**service account认证：**
 每个service account都会自动生成自己的secret，用于包含一个ca，token和secret，用于跟api-server认证
 RBAC授权：
 权限、角色和角色绑定都是kubernetes自动创建好的。我们只需要创建一个叫做kube-dns的 ServiceAccount即可，官方现有的配置已经把它包含进去了。
@@ -504,7 +554,8 @@ RBAC授权：
 $ cd ~/kubernetes-starter
 $ vimdiff kubernetes-simple/services/kube-dns.yaml kubernetes-with-ca/services/kube-dns.yaml 
 ```
->大家可以看到diff只有一处，新的配置没有设定api-server。不访问api-server，它是怎么知道每个服务的cluster ip和pod的endpoints的呢？这就是因为kubernetes在启动每个服务service的时候会以环境变量的方式把所有服务的ip，端口等信息注入进来。  
+>大家可以看到diff只有一处，新的配置没有设定api-server。不访问api-server，它是怎么知道每个服务的cluster ip和pod的endpoints的呢？  
+这就是因为kubernetes在启动每个服务service的时候会以环境变量的方式把所有服务的ip，端口等信息注入进来。  
 
 ## 12.2 创建kube-dns
 ```
