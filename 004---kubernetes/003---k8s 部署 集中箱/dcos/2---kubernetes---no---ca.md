@@ -319,6 +319,131 @@ calico作为kubernets的CNI插件的配置
 
 ## 8. 测试  
 
+### 查询版本信息  
+kubectl version
+### 获取所有的节点信息  
+kubectl get nodes  
+### 创建一个deployment  
+kubectl run kubernetes-bootcamp --image=jocatalin/kubernetes-bootcamp:v1 --port=8080  
+
+### 创建好pod后，没有对外映射对口，那么如何访问上面的pod里面的服务呢？ 
+使用下面的命令
+kubectl proxy 
+Starting to serve on 127.0.0.1:8001  
+(会在本机上开启一个8001端口， 主要用于测试；  通过这个rest api去访问， 
+需要重新打开一个终端
+)  
+![](https://note.youdao.com/yws/public/resource/4683c70afba7aa7f9d32797644c4d964/xmlnote/9DA8A0EBEEAF48F1B14BF246A097F535/20131)  
+
+重新打开一个终端：  
+输入下面的命令 
+
+curl http://127.0.0.1:8001/api/v1/proxy/namespaces/default/pods/kubernetes-bootcamp-6b7849c495-c26l9/  
+![](https://note.youdao.com/yws/public/resource/4683c70afba7aa7f9d32797644c4d964/xmlnote/9AD9FFC334254621887A2BF72584D83E/20128)  
+说明已经访问到pod里的服务里  
+
+
+###  下面通过yaml形式，进行测试  
+#### 编辑nginx-pod.yaml
+nginx-pod.yaml 
+```
+apiVersion: v1
+kind: Pod 
+metadata: 
+  name: nginx 
+spec: 
+  containers: 
+    - name: nginx
+      image: nginx:1.7.9
+      ports: 
+      -  containerPort: 80  
+```
+```
+#创建pod对象
+kubectl create -f nginx-pod.yaml  
+#查看pod对象
+kubectl get pods 
+#如何访问呢？
+#使用上面的方式， 在一个终端里
+kubectl proxy  
+# 打开另一个终端 
+curl http://127.0.0.1:8001/api/v1/proxy/namespaces/default/pods/nginx/
+
+
+```
+
+###  创建一个nginx-deployment.yaml  
+```
+apiVersion: apps/v1beta1 
+kind: Deployment 
+metadata: 
+  name: nginx-deployment 
+spec: 
+  replicas: 2 
+  template: 
+    metadata: 
+      labels: 
+        app: nginx 
+    spec: 
+      containers: 
+      -  name: nginx 
+         image: nginx:1.7.9  
+         ports: 
+           - containerPort: 80     
+
+```
+
+```
+#创建pod对象
+kubectl create -f nginx-deployment.yaml  
+#查看pod对象
+kubectl get pods 
+#根据标签进行获取
+kubectl get pods -l app=nginx  
+
+```
+
+###  创建一个nginx-service.yaml  
+```
+apiVersion: v1
+kind: Service 
+metadata: 
+  name: nginx-service
+spec: 
+  ports: 
+  - port: 8080
+    targetPort: 80
+    nodePort: 20000
+  selector: 
+    app: nginx
+  type: NodePort  
+```
+
+```
+#创建service对象
+kubectl create -f nginx-service.yaml 
+#查看svc对象
+kubectl get svc 
+#测试kube-proxy是否 安装成功？
+#使用service的clusterIP， 端口号进行访问  
+#clusterIP这个类型的IP是Pod内部使用的
+进入nginx-deployment-6c54bd5869-9s97mz换个pod
+curl 10.68.12.93:8080   
+
+#测试NodePort设置是否成功？ 
+curl 工作节点IP:NodePort 
+curl 172.16.91.186:20000
+curl 172.16.91.187:20000 
+
+#测试kubedns是否有效呢?
+#进入pod内部测试
+kubectl exec -it nginx-deployment-6c54bd5869-9s97m bash
+curl nginx-service:8080
+
+
+```
+
+
 
 ## <h2 id="8">9. 为集群增加service功能---kube-proxy(工作节点)    </h2>
 ### 9.1 简介  

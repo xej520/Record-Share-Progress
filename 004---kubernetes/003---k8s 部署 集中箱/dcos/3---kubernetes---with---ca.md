@@ -564,6 +564,9 @@ $ kubectl create -f ~/kubernetes-starter/target/services/kube-dns.yaml
 $ kubectl -n kube-system get pods
 ```
 
-
+# 测试  
+## 运行官方提供的测试用例，创建一个pod  
+kubectl run kubernetes-bootcamp --image=jocatalin/kubernetes-bootcamp:v1 --port=8080
+ 
 
 
