@@ -6,3 +6,6 @@
 #service的nodeport的端口范围限制
 --service-node-port-range=20000-40000 \   
 - Kubernetes Controller Manager 组件里也有设置  
+
+service 是虚拟的  逻辑上的，底层是kube-proxy  
+kube-proxy
