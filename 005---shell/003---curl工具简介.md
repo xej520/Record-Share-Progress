@@ -15,3 +15,12 @@ cURL 功能很强大，有很多参数，这里列出 REST 测试常用的参数
 
 ```
 
+# 测试用例：  
+## 带有请求头，传参数的例子  
+>curl -XPOST -H "Content-Type: application/json" http://127.0.0.1:8080/v1/user -d'{"username":"admin","password":"admin"}'
+
+
+
+
+
+
