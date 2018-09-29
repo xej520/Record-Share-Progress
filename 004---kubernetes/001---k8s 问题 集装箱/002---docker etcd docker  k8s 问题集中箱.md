@@ -15,10 +15,27 @@ calicoctl.cfg文件内容如下:
     spec:
     datastoreType: "etcdv2"
     etcdEndpoints: "http://172.16.91.175:2379,http://127.0.0.1:2379"  
-    ```    
+    ```  
+
+    如果etcd需要认证的话，可以使用下面的方式:  
+    ```
+    apiVersion: v1
+    kind: calicoApiConfig
+    metadata:
+    spec:
+    datastoreType: "etcdv2"
+    etcdEndpoints: "https://192.168.204.3:2379"
+    etcdKeyFile: "/etc/kubernetes/pki/kubernetes-key.pem"
+    etcdCertFile: "/etc/kubernetes/pki/kubernetes.pem"
+    etcdCACertFile: "/etc/kubernetes/pki/ca.pem"
+
+    ```
 
     **总结**  
 &ensp;&ensp;&ensp;&ensp;有点类似于kubectl， 同样需要配置文件才能访问k8s集群  
+2. calico网络模式下，容器间ping不同的原因？  
+    - 不同容器属于不同的calico网络，calico网络默认是隔离的 
+    - 禁止ping这个命令，也就是禁止了icmp协议
 
 
 

@@ -1,4 +1,4 @@
-# Record-Share-Progress
+# <center>Record-Share-Progress</center>
 ### **_记录、分享、成长_**  
 **目前分享的类别:**
 - [001. ceph ](#1) 
@@ -36,10 +36,16 @@
 
 
 # <h2 id="4">004. kubernetes </h2> 
-- [003---k8s部署 集中箱](https://github.com/xej520/Record-Share-Progress/tree/master/004---kubernetes/003---k8s%20%E9%83%A8%E7%BD%B2%20%E9%9B%86%E4%B8%AD%E7%AE%B1)
+- [001---k8s 问题 集装箱](https://github.com/xej520/Record-Share-Progress/tree/master/004---kubernetes/001---k8s%20%E9%97%AE%E9%A2%98%20%E9%9B%86%E8%A3%85%E7%AE%B1)  
+- [003---k8s部署 集装箱](https://github.com/xej520/Record-Share-Progress/tree/master/004---kubernetes/003---k8s%20%E9%83%A8%E7%BD%B2%20%E9%9B%86%E4%B8%AD%E7%AE%B1)  
+- [004---pod 集装箱](https://github.com/xej520/Record-Share-Progress/tree/master/004---kubernetes/004---pod%20%20%E9%9B%86%E8%A3%85%E7%AE%B1)  
+
 - [000---常用命令.md](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/000---%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
 - [001---k8s常用命令.md   ](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/001---k8s%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)  
-- [002---service.md]()
+- [002---service.md]()  
+- [007---cfssl使用.md](https://github.com/xej520/Record-Share-Progress/blob/master/004---kubernetes/007---cfssl%E4%BD%BF%E7%94%A8.md)  
+
+
 
 # <h2 id="5">005. shell </h2> 
 - [000---常用命令](https://github.com/xej520/Record-Share-Progress/blob/master/005---shell/000---%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4.md)
@@ -68,4 +74,9 @@
 
 # <h2 id="10">010. 协议  </h2>  
 - [001---协议简述.md]()  
-- [002---7层协议.md]()
+- [002---7层协议.md]() 
+- [003---tcp.md](https://github.com/xej520/Record-Share-Progress/blob/master/010---%E5%8D%8F%E8%AE%AE/003---tcp.md) 
+- [004---tcp与udp的区别？.md]()
+
+# <h2 id="12">012. PaaS平台  </h2>  
+- [001---PaaS平台 对网络模型的基本要求.md]()
