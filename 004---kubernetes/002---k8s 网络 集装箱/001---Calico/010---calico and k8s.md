@@ -1,10 +1,39 @@
 # <center>Simple Policy Demo for Calico on Kubernetes </center>  
-k8s版本：  
+1. k8s版本：  
 kuberctl version  
-```
-Client Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.0", GitCommit:"925c127ec6b946659ad0fd596fa959be43f0cc05", GitTreeState:"clean", BuildDate:"2017-12-15T21:07:38Z", GoVersion:"go1.9.2", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"9", GitVersion:"v1.9.0", GitCommit:"925c127ec6b946659ad0fd596fa959be43f0cc05", GitTreeState:"clean", BuildDate:"2017-12-15T20:55:30Z", GoVersion:"go1.9.2", Compiler:"gc", Platform:"linux/amd64"}  
-```
+    ```
+    Client Version: version.Info{Major:"1", Minor:"9",     
+    GitVersion:"v1.9.0",  
+    GitCommit:"925c127ec6b946659ad0fd596fa959be43f0cc05",   
+    GitTreeState:"clean", BuildDate:"2017-12-15T21:07:38Z",   
+    GoVersion:"go1.9.2", Compiler:"gc", Platform:"linux/amd64"}
+    
+    Server Version: version.Info{Major:"1", Minor:"9",   
+    GitVersion:"v1.9.0",   
+    GitCommit:"925c127ec6b946659ad0fd596fa959be43f0cc05",   
+    GitTreeState:"clean", BuildDate:"2017-12-15T20:55:30Z",   
+    GoVersion:"go1.9.2", Compiler:"gc", Platform:"linux/amd64"}  
+    ```  
+2. calico 版本 ：  
+calicoctl version  
+    ```
+    Client Version:    v1.6.1   
+    Build date:        2017-09-28T01:12:35+0000   
+    Git commit:        1724e011    
+    Cluster Version:   v2.6.2   
+    Cluster Type:      unknown  
+    ```  
+3. 当前环境   
+
+    |主机名|IP|系统|当前服务| 
+    |:---|:---|:---|:---|
+    |master|172.16.91.185|centos7|kube-apiserver, kube-controller-manager, kube-scheduler, calico|
+    |slave1|172.16.91.186|centos7|kube-let,kube-proxy, calico|
+    |slave1|172.16.91.187|centos7|kube-let,kube-proxy, calico|
+    |harbor|172.16.91.222|centos7|etcd|
+
+
+
 # Configure Namespaces  
 ```
 kubectl create ns policy-demo 
@@ -57,7 +86,21 @@ kubectl run -n policy-demo access --rm -it --image busybox /bin/sh
     </html>
     ```  
 关闭测试Pod access  ，
-进入从节点 
+进入从节点如slave1  
+3. 查看路由信息  
+   ```
+    default via 172.16.91.254 dev ens33 proto static metric 100 
+    172.16.0.0/16 dev ens33 proto kernel scope link src 172.16.91.186 metric 100 
+    172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 
+    172.20.140.64/26 via 172.16.91.187 dev ens33 proto bird 
+    blackhole 172.20.140.192/26 proto bird 
+    172.20.140.206 dev cali3b76f8148f9 scope link 
+    172.20.140.207 dev cali7907ffa73ab scope link 
+    172.20.140.208 dev cali6448c93f838 scope link
+   ```  
+   ![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/CE28021C126248FB9F7D16FF53199D9A/20264)  
+
+
 
 # Enable isolation  
 
