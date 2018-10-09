@@ -103,8 +103,31 @@ kubectl run -n policy-demo access --rm -it --image busybox /bin/sh
 
 
 # Enable isolation  
-
+```
+kubectl create -f - <<EOF
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: default-deny
+  namespace: policy-demo
+spec:
+  podSelector:
+    matchLabels: {}
+EOF
+```
 ## Test Isolation  
+```
+# Run a Pod and try to access the `nginx` Service.
+$ kubectl run --namespace=policy-demo access --rm -ti --image busybox /bin/sh
+Waiting for pod policy-demo/access-472357175-y0m47 to be running, status is Pending, pod ready: false
+
+If you don't see a command prompt, try pressing enter.
+
+/ # wget -q --timeout=5 nginx -O -
+wget: download timed out
+/ #
+```  
+![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/123F68573F2F4D4BA6D65CFEB9C866E3/20372)  
 
 
 
