@@ -129,11 +129,29 @@ wget: download timed out
 ```  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/123F68573F2F4D4BA6D65CFEB9C866E3/20372)  
 
-
-
 # Allow Access using a NetworkPolicy  
+1. 创建网络策略access-nginx.yaml 
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata: 
+  name: access-nginx
+  namespace: policy-demo
+spec: 
+  podSelector: 
+    matchLabels: 
+      run: nginx
+  ingress: 
+    - from: 
+      - podSelector: 
+          matchLabels: 
+            run: access
+```
+规定了访问策略： 
+允许pod的标签是run:nginx 
 
 
+2. 启动access-nginx.yaml策略 
 
 
 

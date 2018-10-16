@@ -392,7 +392,7 @@ You can now join any number of machines by running the following on each node
 as root:
 
   kubeadm join 172.16.91.135:6443 --token yj2qxf.s4fjen6wgcmo506w --discovery-token-ca-cert-hash sha256:6d7d90a6ce931a63c96dfe9327691e0e6caa3f69082a9dc374c3643d0d685eb9
-```
+```   
 
 ### 3.4.4 初始化失败时的解决措施(2种方式) (master节点) 
 - 方式一(推荐这种方式简单明了)：  
