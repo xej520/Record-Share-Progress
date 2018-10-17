@@ -10,6 +10,13 @@ https://www.linuxidc.com/Linux/2018-10/154548.htm
 2. 其他服务可以正常使用  
 3. 仅供参考
 
+============  
+2018.10.16 更新，
+按照当前博文可以安装成功，上面提到的dns服务异常，  
+其实，dns服务一开始就成功了，是测试工具的问题
+============  
+
+
 # 一、 初始化环境介绍  
 |**系统类型**|**IP**|**role**|**cpu**|**memory**|**hostname**|
 |:---|:---|:---|:---|:---|:---|
@@ -500,8 +507,40 @@ https://github.com/kubernetes/kubeadm/issues/998
 这里面有解决方案，不知道为什么我的集群不起作用
 
 
+# 补充：测试dns插件的方法 
+1. 准备测试用的yaml， pod-for-dns.yaml
+    ```
+    apiVersion: v1
+    kind: Pod
+    metadata:
+    name: bb
+    namespace: default
+    spec:
+    containers:
+    - image: busybox:1.28.4
+        command:
+        - sleep
+        - "3600"   
+        imagePullPolicy: IfNotPresent
+        name: bb
+    restartPolicy: Always
 
+    ```  
+    注意：busybox的版本号，有些版本号测试失败  
+2. 创建pod 
+    ```
+    kubectl create -f pod-for-dns.yaml
+    ```
+3. 测试dns服务  
+    ```
+    [root@master ~]# kubectl exec bb -- nslookup webapp
+    Server:    10.96.0.10
+    Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
 
+    Name:      webapp
+    Address 1: 10.103.4.220 webapp.default.svc.cluster.local
+
+    ```
 
 
 

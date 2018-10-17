@@ -8,8 +8,8 @@ C、而RC的作用相当于是保证Service的服务能力和服务质量始终�
 D、一个 Service 在 Kubernetes 中是一个 REST 对象。  
 本文对Service的使用进行详细说明，包括Service的负载均衡、外网访问、DNS服务的搭建、Ingress7层路由机制等。  
 
-# Service 定义详解  
-## yaml格式的Service定义文件的完整内容  
+# 1、Service 定义详解  
+## 1.1 yaml格式的Service定义文件的完整内容  
 ```
 apiVersion: v1
 kind: Service
@@ -37,7 +37,7 @@ spec:
         ip: string
         hostname: string
 ```  
-## 对Service定义文件中各属性的说明表  
+## 1.2 对Service定义文件中各属性的说明表  
 |属性名称|取值类型|是否必须|取值说明| 
 |:---|:---|:---|:---|
 |version|string|Required|v1|
@@ -64,23 +64,23 @@ spec:
 |status.loadBalancer.ingress.ip|string||外部负载均衡器的IP地址|
 |status.loadBalancer.ingress.hostname|string||外部负载均衡器的主机名|  
 
-# Service, RC, Pod 架构层次关系  
+# 2 Service, RC, Pod 架构层次关系  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/7C344CB537C94E69928EFED25F3470E9/20472)  
 
-# VIP和Service 代理  
-## kube-proxy
+# 3 VIP和Service 代理  
+## 3.1 kube-proxy
 运行在每个Node上的kube-proxy进程其实就是一个智能的软件负载均衡器，它会负责把对Service的请求转发到后端的某个Pod实例上并在内部实现服务的负载均衡与会话保持机制。Service不是共用一个负载均衡器的IP，而是被分配了一个全局唯一的虚拟IP地址，称为Cluster IP。   
 在Service的整个生命周期内，它的Cluster IP不会改变。 
 kube-proxy 负责为 Service 实现了一种 VIP（虚拟 IP）的形式，而不是 ExternalName 的形式。  
 在k8s v1.2版本之前默认使用userspace提供vip代理服务，从 Kubernetes v1.2 起，默认是使用 iptables 代理。
 
-## iptables 代理模式
+## 3.2 iptables 代理模式
 这种模式，kube-proxy 会监视 Kubernetes master 对 Service 对象和 Endpoints 对象的添加和移除。 对每个 Service，它会创建相关 iptables 规则，从而捕获到达该 Service 的 clusterIP（虚拟 IP）和端口的请求，进而将请求重定向到 Service 的一组 backend 中的某个上面。 对于每个 Endpoints 对象，它也会创建 iptables 规则，这个规则会选择一个 backend Pod。  
 默认的策略是，随机选择一个 backend。 实现基于客户端 IP 的会话亲和性，可以将 service.spec.sessionAffinity 的值设置为 "ClientIP" （默认值为 "None"）。
 和 userspace 代理类似，网络返回的结果是，任何到达 Service 的 IP:Port 的请求，都会被代理到一个合适的 backend，不需要客户端知道关于 Kubernetes、Service、或 Pod 的任何信息。 这应该比 userspace 代理更快、更可靠。然而，不像 userspace 代理，如果初始选择的 Pod 没有响应，iptables 代理能够自动地重试另一个 Pod，所以它需要依赖 readiness probes。  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/5E8F1056307949DC8C833321CCF21F81/20475)  
 
-# 发布服务---type类型  
+# 4、 发布服务---type类型  
 对一些应用希望通过外部（Kubernetes 集群外部）IP 地址暴露 Service。   
 Kubernetes ServiceTypes 允许指定一个需要的类型的 Service，默认是 ClusterIP 类型。  
 Type 的取值以及行为如下：  
@@ -97,7 +97,7 @@ k8s中有3种IP地址：
 在k8s集群之内，Node IP网、Pod IP网与Cluster IP网之间的通信采用的是k8s自己设计的一种编程实现的特殊的路由规则，不同于常见的IP路由实现
 
 
-# 服务发现 
+# 5、 服务发现 
 Kubernetes 支持2种基本的服务发现模式 —— 环境变量和 DNS。
 __环境变量__  
 当 Pod 运行在 Node 上，kubelet 会为每个活跃的 Service 添加一组环境变量。 它同时支持 Docker links兼容 变量、简单的 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT 变量，这里 Service 的名称需大写，横线被转换成下划线。
@@ -118,7 +118,7 @@ Kubernetes 也支持对端口名称的 DNS SRV（Service）记录。 如果名�
 Kubernetes DNS 服务器是唯一的一种能够访问 ExternalName 类型的 Service 的方式。 更多信息可以查看DNS Pod 和 Service。  
 Kubernetes 从 1.3 版本起， DNS 是内置的服务，通过插件管理器 集群插件 自动被启动。Kubernetes DNS 在集群中调度 DNS Pod 和 Service ，配置 kubelet 以通知个别容器使用 DNS Service 的 IP 解析 DNS 名字。
 
-# Service的基本用法  
+# 6、 Service的基本用法  
 &ensp;&ensp;&ensp;&ensp;一般来说，对外提供服务的应用程序需要通过某种机制来实现，对于容器应用最简便的方式就是通过TCP/IP机制及监听IP和端口号来实现。     
 创建一个基本功能的Service  
 (1) 例如，我们定义一个提供web服务的RC，由两个tomcat容器副本组成，每个容器通过containerPort设置提供服务号为8080： 
@@ -213,7 +213,7 @@ selector定义部分设置的是后端Pod所拥有的label: app=webapp
 - RoundRobin：轮询模式，即轮询将请求转发到后端的各个Pod上
 - SessionAffinity：基于客户端IP地址进行会话保持的模式，第一次客户端访问后端某个Pod，之后的请求都转发到这个Pod上   
 默认是RoundRobin模式。  
-# 多端口Service  
+# 7、 多端口Service  
 有时候，一个容器应用提供多个端口服务，可以按下面这样定义：  
 ```
 apiVersion: v1
@@ -254,7 +254,7 @@ spec:
     port: 53
     protocol: TCP
 ```  
-# Headless Service  
+# 8、 Headless Service  
 有时不需要或不想要负载均衡，以及单独的 Service IP。 遇到这种情况，可以通过指定 Cluster IP（spec.clusterIP）的值为 "None" 来创建 Headless Service。
 这个选项允许开发人员自由寻找他们自己的方式，从而降低与 Kubernetes 系统的耦合性。 应用仍然可以使用一种自注册的模式和适配器，对其它需要发现机制的系统能够很容易地基于这个 API 来构建。
 对这类 Service 并不会分配 Cluster IP，kube-proxy 不会处理它们，而且平台也不会为它们进行负载均衡和路由。仅依赖于Label Selector将后端的Pod列表返回给调用的客户端。
@@ -279,7 +279,7 @@ __Lable Secector：__
 配置 Selector：对定义了 selector 的 Headless Service，Endpoint 控制器在 API 中创建了 Endpoints 记录，并且修改 DNS 配置返回 A 记录（地址），通过这个地址直接到达 Service 的后端 Pod上。  
 不配置 Selector：对没有定义 selector 的 Headless Service，Endpoint 控制器不会创建 Endpoints 记录。   
 
-# 外部服务Service——没有 selector 的 Service    
+# 9、 外部服务Service——没有 selector 的 Service    
 在某些环境中，应用系统需要将一个外部数据库用为后端服务进行连接，或将另一个集群或Namespace中的服务作为服务的后端，这时可以通过创建一个无Label Selector的Service实现：  
 ```
 apiVersion: v1
@@ -390,7 +390,7 @@ webapp-hostnetwork        1/1     Running   0          7s    172.16.91.136   sla
 ```
 curl slave1:8080  
 ```  
-## 将Service的端口号映射到物理机  
+## 10.2 将Service的端口号映射到物理机  
 (1) 通过设置nodePort映射到物理机，同时设置Service的类型为NodePort  
 文件webapp-svc-nodeport.yaml  
 ```
@@ -458,28 +458,6 @@ status:
     ingree:
     - ip: 146.148.47.155
 ```  
-
-# Ingress: HTTP 7层 路由机制  根据前面的
-根据前面对Service的使用说明，我们知道Service的表现形式为IP:Port，即工作在TCP/IP层，  
-而对于基于HTTP的服务来说，不同的URL地址经常对应到不同的后端服务或者虚拟服务器，这些应用层的转发机制仅通过kubernetes的Service机制是无法实现的。  
-kubernetes v1.1版本中新增的Ingress资源对象将不同URL的访问请求转发到后端不同的Service，以实现HTTP层的业务路由机制。
-
-使用 Ingress 进行负载分发时，Ingress Controller 将基于 Ingress 规则将客户端请求直接转发到 Service 对应的后端 Endpoint（即 Pod）上，这样会跳过 kube-proxy 的转发功能，kuber-proxy 不在起作用。  
-如果 Ingress Controller 提供的是对外服务，则实际上实现的是边缘路由器的功能。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
