@@ -111,6 +111,7 @@ docker pull registry.cn-qingdao.aliyuncs.com/kubernetes_xingej/nginx-ingress-con
     ```   
 
 ### 第三步： 部署nginx-ingress-controller  
+
 ```
 kubectl apply -f mandatory.yaml
 ``` 
