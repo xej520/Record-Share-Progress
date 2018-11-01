@@ -498,6 +498,9 @@ linux/amd64, go1.11, eb51e8b
 如何解决？  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/CA78D7E89E8B46239B5A2E1F1BE080E9/20364)  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/2ECD604D5ED344CD94207B132BAF16F2/20366)  
+通过下面的命令，进行编辑删除  
+kubectl edit cm coredns -oyaml -nkube-system
+
 
 具体原因，暂时不再跟踪，目前主要想研究calico的network policy，此问题先放一边
 
@@ -513,7 +516,7 @@ https://github.com/kubernetes/kubeadm/issues/998
     apiVersion: v1
     kind: Pod
     metadata:
-    name: bb
+    name: dns-test
     namespace: default
     spec:
     containers:
@@ -522,7 +525,7 @@ https://github.com/kubernetes/kubeadm/issues/998
         - sleep
         - "3600"   
         imagePullPolicy: IfNotPresent
-        name: bb
+        name: dns-test
     restartPolicy: Always
 
     ```  
@@ -533,12 +536,12 @@ https://github.com/kubernetes/kubeadm/issues/998
     ```
 3. 测试dns服务  
     ```
-    [root@master ~]# kubectl exec bb -- nslookup webapp
+    [root@master ~]# kubectl exec dns-test -- nslookup kubernetes
     Server:    10.96.0.10
     Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
 
-    Name:      webapp
-    Address 1: 10.103.4.220 webapp.default.svc.cluster.local
+    Name:      kubernetes
+    Address 1: 10.96.0.1 webapp.default.svc.cluster.local
 
     ```
 

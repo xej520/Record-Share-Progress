@@ -76,4 +76,8 @@
     
 #### 7.0 查看当前docker容器可以使用的网络  
     docker network ls  
-![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/8A55321E4A204CE2B68A5DCB0226BB4F/20022)
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/8A55321E4A204CE2B68A5DCB0226BB4F/20022)   
+8. 创建calico类型的网络  
+```
+docker network create --driver calico --ipam-driver calico-ipam cal_net1
+``` 
