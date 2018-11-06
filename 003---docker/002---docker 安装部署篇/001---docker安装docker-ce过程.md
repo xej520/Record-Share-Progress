@@ -15,7 +15,7 @@ mkdir -p /etc/docker
 tee /etc/docker/daemon.json <<-'EOF'
 {
   "registry-mirrors": ["https://gwusysv0.mirror.aliyuncs.com"]
-}
+}EOF
 ```
 
 # 启动服务
@@ -25,3 +25,4 @@ systemctl start docker
 systemctl status docker
 ```
 
+docker run -itd --name a-web1 mybusybox   

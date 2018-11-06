@@ -162,9 +162,14 @@ ping 172.20.140.193
 docker exec -it web1 ping -c 2 b-web1     
 ```  
 - master节点 上 进行抓包   
-![web1 ping b-web1](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/FA3C1EF1D4324D6A96EED95CAD1E9617/21826)  
+![web1 ping b-web1](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/C8015870FA7944AFB64B86E83B8764CA/21828)  
 - slave1节点 上 进行抓包   
 ![web1 ping b-web1](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/8E861A5E21354955975E90700327DB31/21824)  
+
+## 总结：   
+- 默认情况下，其他节点物理IP不能访问本节点上的容器  
+- 不同节点上的容器的IP是唯一的，对方可以看的到，不用进行NAT转换，从抓包中可以看出来，ip并没有进行变化。  
+
 
 
 

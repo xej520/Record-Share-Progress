@@ -154,6 +154,14 @@ API Macinery提供了一个标准配置的API Server,包括TLS,证书，认证�
 |Service catalog|Helm|  
 |mariadb broker|Helm|  
 
+# 镜像准备 
+|镜像名字|版本号|
+|quay.io/coreos/etcd|latest|
+
+
+
+
+
 0. 部署k8s环境  
 可以参考这篇文章：  
 https://www.jianshu.com/p/48695bd6401f  
@@ -167,34 +175,188 @@ kubectl get nodes
 - 部署Helm  
 可以参考下面文章进行部署安装：  
 https://www.jianshu.com/p/200020e7a843  
+
+- 为tiller设置权限  
+https://github.com/kubernetes-incubator/service-catalog/blob/master/docs/install.md  
+```
+kubectl create clusterrolebinding tiller-cluster-admin \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:default
+```
+
 - 添加Service Catalog的Helm Charts仓库地址  
 ```
 helm repo add svc-cat https://svc-catalog-charts.storage.googleapis.com
 ```  
+![repo add svc-cat](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/BD7E677B39274E45AA49C49EBE0030B0/21833)  
 - 查看Service Catalog的Helm仓库是否已经在系统中注册了  
 ```
 helm repo list    
-```
-- 查看service-catalog 
+```  
+![helm repo list](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/F35FE70DCF3B4962BC1F4170D6559B33/21835)  
+- 查看service-catalog 仓库中给我们提供了什么内容
 ```
 helm search service-catalog  
-```
+```  
+![helm search service-catalog](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/D3C16D45426C431293F5F0FCC4AAC5E1/21838)  
 
 3. 安装service catalog  
 可以使用许多可选的helm options来安装Service Catalog  
 这里，我们仅仅使用标准的options将Service Catalog安装到catalog名字空间中。  
 ```
-helm install svc-cat/catalog --name mariabd
+helm install svc-cat/catalog --name catalog --namespace catalog
+kubectl get pods -n catalog  
+```  
+![install svc-catalog](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/9570BCBC6B374FD8B89CC18DDEFF1AF8/21840)  
+![kubectl get pods -n catalog](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/ABB0877AB29748FDB9BB422600F49D8C/21842)    
+4. 准备mariadb-broker  
+https://github.com/prydonius/mariadb-broker  
+
+```
+git clone https://github.com/prydonius/mariadb-broker.git
+cd mariadb-broker 
+```
+![git clone mariadb-broker](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/810D228A3C4148EF98C9895443EE520E/21844)   
+![list mariadb-broker](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/45CAE7A4F5C24A81A013F2AF8E9547D6/21846)   
+
+
+重新开启一个终端，安装mariadb-broker(选做)  
+
+5. 通过helm安装mariadb-broker  
+```
+helm install --name mariadb-broker --namespace default charts/mariadb-broker
+```  
+![install mariadb-broker](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/06BE3071588D4FABAFB60319616F17D5/21848)  
+6. 查看catalog安装进度    
+```
+kubectl get pods -n catalog
+```
+7. 查看broker的安装进度   
+```
+kubectl get pods -n default
+```  
+![kubectl get pods -n default](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/F424F9D98028409D8305DE8C5AE759C7/21850)    
+  
+# 如何使用  
+1. 查看新生成的api 
+```
+kubectl api-versions   
+```  
+![api-versions](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/F85C0FDE38734850952770885C5A30D9/21852)    
+2. 查看是否能获取到新的类型   
+```
+kubectl get clusterservicebrokers,clusterserviceclasses,clusterserviceplans,serviceinstances,servicebindings
+```  
+![get resources](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/D8AF9090C5814C848F0391F5C18050E3/21854)    
+
+
+3. 如何获取mariadb-broker的用户名和密码   
+```
+cd /root/mariadb-broker
+cat examples/mariadb-secret.yaml
+```  
+![mariadb-secret.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/0DCD6EDEF7154C7EACD93E194186CF42/21858)  
+4. 根据mariadb-secret.yaml生成secret对象  
+```
+kubectl create -f examples/mariadb-secret.yaml
 ```  
 
+5. 查看是否创建成功secret对象？  
+```
+kubectl get secrets  
+```  
+![create examples/mariadb-secret.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/B30D94E3BF324674A5E45DAD24973E6A/21856)
+
+接下来，需要在Service Catalog中创建这个Service Broker  
+6. 查看一下Service Broker的YAML文件  
+```
+cat examples/mariadb-broker.yaml  
+```  
+![more examples/mariadb-broker.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/06B9E1C885DA442289B0ACCA9A9E8622/21864)  
+7. 创建Service Broker  
+```
+kubectl create -f examples/mariadb-broker.yaml
+```  
+![create -f examples/mariadb-broker.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/BF6A2AF34D4F4E60968F267DA268088D/21860)  
+8. 查看一个所有Service Broker相关资源的列表   
+```
+kubectl get clusterservicebrokers,clusterserviceclasses,clusterserviceplans,serviceinstances,servicebindings  
+```   
+![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/623294AF98D84CD1A2F494472E7B7C27/21867)  
+
+9. 查看一个所有Service Broker相关资源的列表的详细信息   
+```
+kubectl get clusterservicebrokers, clusterserviceclasses, clusterserviceplans, serviceinstances, servicebindings -oyaml  
+```
+![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/3B41C81E63F94BDBB90DCB28AA4487AE/21869)    
+![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/4D8E969B21414D87BB2279B18D018930/21871)   
+![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/45E3E4101FA94B14BA7A5A6A3AD73BBA/21873)   
 
 
+10. 请求Broker创建一个mariadb数据库的实例(相当于创建了一个数据库)   
+- 查看所需要的yaml    
+```
+cat examples/mariadb-instance.yaml    
+```
+![more mariadb-instance](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/AD08241DA7554AE6BCAF2AED81A88DB1/21875)  
+
+- 进行创建  
+```
+kubectl create -f examples/mariadb-instance.yaml
+```  
+![create mariadb-instance.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/0C6117ABD13243A694E96990111F9001/21877)    
+
+- 查看进度  
+```
+kubectl get clusterservicebrokers,clusterserviceclasses,clusterserviceplans,serviceinstances,servicebindings  
+```  
+![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/52F610CD3F844312AD455A86B89B8DD8/21879)  
+- 查看详细信息  
+```
+kubectl get serviceinstances mariadb-instance -o yaml  
+```  
+![mariadb-instance](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/EF946868E9F6460ABFACD4A54D8297C0/21881)   
+![mariadb-instance](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/2B99DD6FD82B4A5CBA3D3F030C930678/21883)    
+
+11. 创建binding对象
+- 目的：是为了获取访问数据库服务的认证信息   
+- 查看binding yaml文件  
+```
+cat examples/mariadb-binding.yaml   
+```  
+![more mariadb-binding.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/4F8101BD8E9241C18A78C482ADECE179/21885)   
+- 进行创建 
+```
+kubectl create -f examples/mariadb-binding.yaml 
+```  
+![create mariadb-binding.yaml]()  
+
+- 这时，我们应该创建了一些binding action 运行在后台，如果我们浏览binding对象的时候，我们将看到bind结果已经注入了，bind结果是True  
+- 查看binding对象  
+```
+kubectl get servicebindings mariadb-binding -o yaml   
+```  
+![more mariadb-binding]()  
+- 应该有一个secret被创建了出来  
+- 进行获取secret  
+```
+kubectl get secret mariadb-instance-credentials   
+```  
+![get secret mariadb-instance-credentials]()     
+- kubectl get secret mariadb-instance-credentials -oyaml  
+```
+
+```
+- 
 
 
+=====================================
+# 主要步骤 :  
+1. 安装helm  
+2. 添加svc-catalog的charts的仓库地址 
+3. 通过helm 安装service catalog  
 
 
-
-
-
-
+# 安装service broker  
+1. 
 
