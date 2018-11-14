@@ -209,6 +209,12 @@ kubectl get pods -n catalog
 ```  
 ![install svc-catalog](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/9570BCBC6B374FD8B89CC18DDEFF1AF8/21840)  
 ![kubectl get pods -n catalog](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/ABB0877AB29748FDB9BB422600F49D8C/21842)    
+
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/52C495B041054A56B90C1D45453C6C7B/22017)   
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/28CA70B303614E889F800BE92F78B4FF/22015)   
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/016AA73784CB453B915FA73EDB9B1D25/22013)   
+
+
 4. 准备mariadb-broker  
 https://github.com/prydonius/mariadb-broker  
 
@@ -275,7 +281,7 @@ cat examples/mariadb-broker.yaml
 ![more examples/mariadb-broker.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/06B9E1C885DA442289B0ACCA9A9E8622/21864)  
 7. 创建Service Broker  
 ```
-kubectl create -f examples/mariadb-broker.yaml
+kubectl create -f examples/mariadb-broker.yaml   
 ```  
 ![create -f examples/mariadb-broker.yaml](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/BF6A2AF34D4F4E60968F267DA268088D/21860)  
 8. 查看一个所有Service Broker相关资源的列表   

@@ -15,7 +15,8 @@ mkdir -p /etc/docker
 tee /etc/docker/daemon.json <<-'EOF'
 {
   "registry-mirrors": ["https://gwusysv0.mirror.aliyuncs.com"]
-}EOF
+}
+EOF
 ```
 
 # 启动服务

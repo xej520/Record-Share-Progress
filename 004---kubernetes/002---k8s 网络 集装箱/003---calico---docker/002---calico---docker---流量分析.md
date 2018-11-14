@@ -173,13 +173,92 @@ docker exec -it web1 ping -c 2 b-web1
 
 
 
+# 小知识点   
+## 
+
+1. 流量有几种状态？  
+https://blog.csdn.net/leoysq/article/details/60579009    
+- 新建NEW
+- 已建立ESTABLISHED  
+- 相关RELATED
+- 无效INVALID
+2. iptables数据包、连接标记模块MARK/CONNMARK的使用（打标签）  
+https://www.cnblogs.com/EasonJim/p/8414943.html    
+- ![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/E653A57A12D7435984BF73B8BB082D58/22049)    
+
+3. CNI 的实现可以被分成3种？  
+- 所有 Pod 之间无需 NAT 即可互通
+- 主机和 Pod 之间无需 NAT 即可互通
+- Pod 自省的 IP 地址和之外部看到该 Pod 的地址一致   
+
+4. Pod的网络必须满足以下3个条件？    
+- 3 层路由实现
+- Overlay 实现
+- 2 层交换实现
+![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/26914967F78643EEBED7AD81C0F75D77/22063)  
 
 
 
 
+## iptables 规则链 解析   
+1. -A cali-fw-cali2bdb33ebbb0 -m comment --comment "cali:DFFsrMjLW8jAFQ7D" -m conntrack --ctstate INVALID -j DROP   
+- 将删除所有具有“INVALID”状态匹配的流量    
+- “DROP”目标将丢弃一个数据包而没有任何响应，与拒绝该数据包的REJECT相反。  
+- 我们使用DROP，因为没有对INVALID的数据包的正确的“REJECT”响应，我们不想确认我们收到这些数据包
+
+2. iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT    
+- 将接受所有新的传入ICMP回显请求，也称为ping。   
+- 只有第一个数据包计数为NEW，其余数据包将由RELATED，ESTABLISHED规则处理。   
+- 由于计算机不是路由器，不需要允许具有状态NEW的其他ICMP流量。
+
+3. iptables规则链默认策略的说明   
+![链的默认策略说明](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/5CAA25D3397B462BBAD71245446FDEF7/22067)     
 
 
+4. iptables规则的执行顺序   
+- iptables执行规则时，是从规则表中从上至下顺序执行的，如果没遇到匹配的规则，就一条一条往下执行，  
+- 如果遇到匹配的规则后，那么就执行本规则，执行后根据本规则的动作(accept, reject, log等)，决定下一步执行的情况，后续执行一般有三种情况：    
 
+    - 一种是继续执行当前规则队列内的下一条规则。比如执行过Filter队列内的LOG后，还会执行Filter队列内的下一条规则。
+
+    - 一种是中止当前规则队列的执行，转到下一条规则队列。比如从执行过accept后就中断Filter队列内其它规则，跳到nat队列规则去执行
+    - 一种是中止所有规则队列的执行。
+
+5. iptables 中-i, -o参数说明   
+- -i参数说明
+![iptables -i](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/6DB35A28CD6B4C6D83189200D5E832EB/22089)    
+
+- -o参数说明   
+![iptables -o](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/3000AD2B1083414F8A3B19EF57DD1AA0/22094)   
+
+- 总结：  
+    - INPUT,PREROUTING链，只能使用-i参数  
+    - OUTPUT,POSTROUTING链，只能使用-o参数   
+    - FORWARD链，-i, -o参数都可以使用的
+
+6. PREROUTING, POSTROUTING链，跟路由表的关系  
+    - 对于进来的数据包，先经过 PREROUTING， 然后再经过路由表  
+    - 对于出去的数据包，先经过路由表， 再经过POSTROUTING
+
+7. 容器发包出去的过程：  
+- ip包会从container发往自己默认的网关docker0  
+- __当包到达docker0时就时到达了主机__  
+- 这时候会查询主机的 __路由表__，发现包应该从主机的网卡eth0出去   
+![](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/0A6C6CA1A6CA404DB20B7A3B33D2D78A/22097)    
+- 容器--->docker0--->路由表--->FORWARD--->postrouting
+
+8. 网卡/网口转发配置  FORWARD    
+- 转发配置，数据包的流向是由，内网到外网    
+![FORWARD](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/4019CAAE633A4BD1BBF1BC67EC78EE68/22100)   
+- 注意，在docker环境下，FORWARD链，跟其他链不一样，  其他链是单向的，要么进，要么出  
+- 而FORWARD链，有两个方向：  
+    - 数据包从本机到外面， 
+    - 数据包从外面到本机   
+    - 如何判断这条规则，对应的是 数据包由内到外？  还是  由外到内？     
+        - 可以根据-i 接口设备，    
+        - 查看接口设备 是 内网网卡，而是外网网卡     
+            - 如果是内网网卡接口，说明是 由内到外   
+            - 如果是外网网卡接口，说明是 由外到内     
 
 
 
