@@ -27,4 +27,17 @@
     主要是更新registry-mirrors 这个属性
 
 
+## [ERROR] [token.go:48]: Unexpected error when creating the token, error: Unable to parse image from string: shera-test  
+- 现状描述：  
+    ![上传镜像到harbor](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/480FF728FC1941BC8004F843C93199D1/22228)  
+    ![查看harbor日志](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/187664C0434D4C278D149C8A99976457/22230)   
+- 原因一？  
+    镜像目录不符合要求：应该是两级目录以上才可以的， 如  
+    172.16.91.111:5000/mysql:v3.2&ensp;&ensp;不符合要求  
+    172.16.91.111:5000/mysql/mysql:v3.2&ensp;&ensp;符合要求  
+- 原因二？   
+    还有一种情况，可能是tag不符合要求：  
+    ![tag问题](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/C100E03AD36D4CDF82726774FAA1EF46/22232)   
+    可以参考这个链接
+    https://github.com/goharbor/harbor/issues/2351   
 

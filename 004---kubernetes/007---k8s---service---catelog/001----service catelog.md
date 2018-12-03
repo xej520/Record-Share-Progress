@@ -203,6 +203,13 @@ helm search service-catalog
 3. 安装service catalog  
 可以使用许多可选的helm options来安装Service Catalog  
 这里，我们仅仅使用标准的options将Service Catalog安装到catalog名字空间中。  
+- 获取指定版本的catalog  
+    helm fetch svc-cat/catalog --version 0.1.27   
+    ![下载指定版本的catalog](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/91E030101697432BA7B90002C1F06AB8/22239)   
+- 安装catalog(指定路径安装)  
+    helm install /root/catalog --name catalog --namespace catalog 
+- 卸载catalog 
+    helm del --purge catalog
 ```
 helm install svc-cat/catalog --name catalog --namespace catalog
 kubectl get pods -n catalog  
@@ -292,7 +299,7 @@ kubectl get clusterservicebrokers,clusterserviceclasses,clusterserviceplans,serv
 
 9. 查看一个所有Service Broker相关资源的列表的详细信息   
 ```
-kubectl get clusterservicebrokers, clusterserviceclasses, clusterserviceplans, serviceinstances, servicebindings -oyaml  
+kubectl get clusterservicebrokers,clusterserviceclasses,clusterserviceplans,serviceinstances,servicebindings -oyaml  
 ```
 ![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/3B41C81E63F94BDBB90DCB28AA4487AE/21869)    
 ![资源列表](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/4D8E969B21414D87BB2279B18D018930/21871)   
@@ -365,4 +372,16 @@ kubectl get secret mariadb-instance-credentials
 
 # 安装service broker  
 1. 
+
+
+
+=====================================  
+# GET /v2/catalog  
+- curl http://root:123456@shared-mysql-service-broker-service.osb.svc.cluster.local/v2/catalog 
+- curl -u root:123456 http://shared-mysql-service-broker-service.osb.svc.cluster.local/v2/catalog   
+-  curl -u root:123456 http://shared-mysql-service-broker-service.osb.svc.cluster.local/v2/catalog -H "X-Broker-API-Version: 2.12"
+
+![GET /v2/catalog](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/5ADB791D8F7244BCA171CF112B5B9722/22244)    
+![](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/590214D4497F4BB09940857CB76E7EC4/22246)      
+
 

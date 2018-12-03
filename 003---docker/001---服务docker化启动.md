@@ -18,7 +18,12 @@
     docker  rm  xej-mysql
     docker run --name xej-mysql -v ${cur_dir}/data:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest  
 ### 链接测试：  
-![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/32D64D1FF5DD4CB0A62626D55C85851E/20082)   
+![](https://note.youdao.com/yws/public/resource/ca7c2468223e3c4a80c4e24b70ff9608/xmlnote/32D64D1FF5DD4CB0A62626D55C85851E/20082)  
+
+如何使用命令行登陆mysql  
+mysql -uroot -p123456
+docker exec -it xej-mysql bash  
+![登陆mysql](https://note.youdao.com/yws/public/resource/325637fdd3e566a5d270882de12217ce/xmlnote/E927B7DE7D38493A8B056043BFB9CB05/22241)   
 
 # redis服务&ensp;&ensp;docker化运行  
 ## 主要步骤：  
