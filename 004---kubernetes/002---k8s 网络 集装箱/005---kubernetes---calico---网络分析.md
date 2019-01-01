@@ -13,10 +13,14 @@ kubectl run nginx --image=mybusybox --port 80 --expose --labels="app=web,role=ng
 
 ## 场景一: 容器内可以访问k8s宿主机   
 
+1. 检测calico网络情况  
+![](https://note.youdao.com/yws/public/resource/4d55e910268f5b5d344e9126be9c53d0/xmlnote/ADAF6993918E4AD0B1E85BCDDD1B393E/22815)   
+
+2. 如何设置成BGP模式？  默认是IPIP模式
+![](https://note.youdao.com/yws/public/resource/4d55e910268f5b5d344e9126be9c53d0/xmlnote/5C2FFB7FBB3E47E6AB284461118BC59D/22817)  
 
 
-
-
+3. 如何部署calicoctl 工具？  
 
 
 

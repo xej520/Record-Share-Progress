@@ -61,8 +61,11 @@ net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl -p /etc/sysctl.d/k8s.conf
-ls /proc/sys/net/bridge
+ls /proc/sys/net/bridge  
 ```   
+__`解释下：为什么要设置这两个参数呢?`__  
+&ensp;&ensp;&ensp;&ensp;网络插件需要为kube-proxy提供一些特定的支持，比如kube-proxy的iptables模式基于iptables，网络插件就需要确保容器的流量可以流过iptables，比如一些网络插件会用到网桥，而网桥工作在数据链路层，iptables/netfilter防火墙工作在网络层，以上配置可以使得通过网桥的流量也进入iptables/netfilter防火墙，确保iptables模式的kube-proxy可以正常工作
+
 ### 2.5.2 打开ipv4的转发功能 (所有节点)
 如果不打开的话，在将从节点加入到集群时，会报以下的问题？  
 ![](https://note.youdao.com/yws/public/resource/d8631b2801d11e53d570068af1c0bf0f/xmlnote/4764194B67B84BDDBF62EACFA5C2FEBE/20362)  
