@@ -53,3 +53,63 @@ docker exec -it xej-mysql bash
     说明redis可以正常提供服务，在window上，同样是这么测试即可。
 
 
+# sonar 容器化部署   
+部署sonar 需要先部署一个数据库，这里使用postgresql了
+## 1.1 准备镜像  
+```
+docker pull postgres:10.4   
+docker pull sonarqube:7.1    
+```  
+
+## 1.2 编写脚本  
+1. start-postgresql.sh
+```
+#!/bin/bash
+
+docker stop postgresql
+docker rm postgresql
+
+docker run -d --name postgresql -p 5432:5432 \
+	-e POSTGRES_USER=sonar \
+	-e POSTGRES_PASSWORD=sonar \
+	-e POSTGRE_DB=sonar   \
+	-v /root/xej-sonar/data/postgresql/data:/var/lib/postgresql/data \
+	postgres:10.4
+```
+2. start-sonar.sh
+```
+#!/bin/bash
+
+docker stop sonarqube
+docker rm sonarqube
+
+docker run --name sonarqube --link postgresql -e SONARQUBE_JDBC_URL=jdbc:postgresql://postgresql:5432/sonar -p 9000:9000 -d -v /root/xej-sonar/data/sonarqube/data:/opt/
+sonarqube/data -v /root/xej-sonar/data/sonarqube/extensions:/opt/sonarqube/extensions sonarqube:7.1
+
+```  
+3. 在宿主机上，创建数据存储目录(`可以替换成自己的目录`)  
+```
+mkdir -p /root/xej-sonar/data/postgresql/data
+mkdir -p /root/xej-sonar/data/sonarqube/data  
+mkdir -p /root/xej-sonar/data/sonarqube/extensions
+```
+
+4. 给脚本设置执行权限  
+```
+chmod +x start*
+```  
+5. 启动
+```
+./start-postgresql.sh   
+./start-sonar.sh
+```  
+`注意`: 先启动postgresql脚本，成功后，才启动sonar脚本(`需要等一会才能访问成功`)
+
+## 1.3 访问sonar
+localhost:9000   
+![访问sonar](https://note.youdao.com/yws/public/resource/eab756e5b4ffe2e93a14041c450b2408/xmlnote/90B8579395AC4E5EAEC11DA698BBB220/23177)
+
+
+
+
+
